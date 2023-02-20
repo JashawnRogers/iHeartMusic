@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import useAuth from '../hooks/useAuth'
+import TrackSearchResult from './TrackSearchResult'
 import SpotifyWebApi from 'spotify-web-api-node'
 
 import { Container, Form } from 'react-bootstrap'
@@ -62,7 +63,9 @@ const Dashboard = ({ code }) => {
      />
 
      <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
-      Search
+     {searchResults.map(track => (
+        <TrackSearchResult track={track} key={track.uri} />
+      ))}
      </div>
      <div className="">
       Bottom
