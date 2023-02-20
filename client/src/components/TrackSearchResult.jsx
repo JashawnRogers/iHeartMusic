@@ -1,9 +1,16 @@
 import React from 'react'
 
-const TrackSearchResult = ({track}) => {
+const TrackSearchResult = ({track, chooseTrack}) => {
+
+  const handlePlay = () => {
+    chooseTrack(track)
+  }
+
   return (
-    <div className='d-flex m-2 align-items-center' style={{cursor: 'pointer'}}
-    
+    <div 
+      className='d-flex m-2 align-items-center' 
+      style={{cursor: 'pointer'}}
+      onClick={handlePlay}
     >
       <img src={track.albumUrl} alt={track.title} style={{height: '64px', width: '64px'}}/>
       <div className="ms-3">
