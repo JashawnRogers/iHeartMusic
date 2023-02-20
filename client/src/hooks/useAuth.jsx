@@ -7,21 +7,21 @@ const useAuth = (code) => {
  const [expriresIn, setExpiresIn] = useState();
 
 
- //Makes request to get tokens from server 
+ //Makes request to get tokens from server
+ // ERROR: console logging the data works fine but when i console log the state it does not work. 
  useEffect(() => {
   axios
     .post('http://localhost:3001/login', {code})
     .then(res => {
-      setAccessToken(res.data.access_token);
-      setRefreshToken(res.data.refresh_token);
-      setExpiresIn(res.data.expires_in);
-
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
+      setExpiresIn(res.data.expiresIn);
       // clear code parameter from url on successful login
       window.history.pushState({}, null, '/');
     })
     .catch(err => {
       console.log(err);
-      window.location = "/";
+      // window.location = "/";
     })
  }, [code])
 
@@ -39,8 +39,8 @@ const useAuth = (code) => {
       setExpiresIn(res.data.expiresIn);
     })
     .catch(err => {
-      console.log('client: ',err);
       window.location = "/";
+      console.log('client: ',err);
     })
   }, (expriresIn - 60) * 1000)
   
@@ -48,6 +48,7 @@ const useAuth = (code) => {
   return () => clearInterval(interval)
  },[refreshToken, expriresIn])
 
+ 
  return accessToken;
 }
 
