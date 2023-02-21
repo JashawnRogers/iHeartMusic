@@ -5,6 +5,7 @@ import Player from './Player'
 import SpotifyWebApi from 'spotify-web-api-node'
 
 import { Container, Form } from 'react-bootstrap'
+import axios from 'axios'
 
 
 const spotifyApi = new SpotifyWebApi({
@@ -18,12 +19,27 @@ const Dashboard = ({ code }) => {
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [playingTrack, setPlayingTrack] = useState([]);
+  const [lyrics, setLyrics] = useState('');
   
   
   const chooseTrack = (track) => {
     setPlayingTrack(track)
     setSearch('')
+    setLyrics('')
   }
+
+  useEffect(() =>{
+    if (!playingTrack) return
+
+    axios.get('http://localhost:3001/lyrics', {
+      params: {
+        track: playingTrack.title,
+        artist: playingTrack.artist
+      }
+    }).then(res => {
+      setLyrics(res.data.lyrics)
+    })
+  }, [playingTrack])
 
   // console.log(accessToken)
   //Set access token on Spotify api whenever it changes
@@ -47,11 +63,17 @@ const Dashboard = ({ code }) => {
           return smallest
         }, track.album.images[0])
 
+        const largestAlbumImage = track.album.images.reduce((largest, image) => {
+          if (image.height > largest.height) return image 
+          return largest
+        }, track.album.images[0])
+
         return {
           artist: track.artists[0].name,
           title: track.name,
           uri: track.uri,
-          albumUrl: smallestAlbumImage.url
+          albumUrl: smallestAlbumImage.url,
+          albumCover: largestAlbumImage.url
         }
       }))
     }).catch(err => {
@@ -61,8 +83,9 @@ const Dashboard = ({ code }) => {
     return () => cancel = true
   }, [search, accessToken])
   
+  console.log(playingTrack)
   return (
-  <Container className='d-flex flex-column py-3' style={{ height: "100vh" }}>
+  <Container className='d-flex flex-column py-3' style={{ height: "100vh"}}>
      <Form.Control 
      type="search"
      placeholder="Search Songs or Artists..." 
@@ -74,6 +97,15 @@ const Dashboard = ({ code }) => {
      {searchResults.map(track => (
         <TrackSearchResult track={track} key={track.uri} chooseTrack={chooseTrack}/>
       ))}
+      {searchResults.length === 0 && (
+        <div className="text-center" style={{whiteSpace: 'pre'}}>
+          {lyrics ? lyrics : 
+            <div className='mt-4'>
+              <img src={playingTrack.albumCover} alt={playingTrack.title} style={{height: '400px', width: '400px'}}/>
+            </div>
+          }
+        </div>
+      )}
      </div>
      <div className="">
       <Player accessToken={accessToken} trackUri={playingTrack?.uri}/>

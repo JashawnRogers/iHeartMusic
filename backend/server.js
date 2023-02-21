@@ -2,11 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const SpotifyWebApi = require("spotify-web-api-node");
+const lyricsFinder = require("lyrics-finder");
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = 3001;
 
@@ -55,12 +57,16 @@ app.post("/login", (req, res) => {
 
       // Set the access token on the API object to use it in later calls
       spotifyApi.setAccessToken(data.body["access_token"]);
-      // spotifyApi.setRefreshToken(data.body["refresh_token"]);
     })
     .catch((err) => {
       console.log(err);
       res.sendStatus(400);
     });
+});
+
+app.get("/lyrics", async (req, res) => {
+  const lyrics = await lyricsFinder(req.query.artist, req.query.track);
+  res.json({ lyrics });
 });
 
 app.listen(PORT || 3001, () => {
