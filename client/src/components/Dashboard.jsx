@@ -85,7 +85,7 @@ const Dashboard = ({ code }) => {
   
   console.log(playingTrack)
   return (
-  <Container className='d-flex flex-column py-3' style={{ height: "100vh"}}>
+  <Container className='d-flex flex-column py-3 bg-dark text-white' style={{ height: "100vh", minWidth: '100vw' }}>
      <Form.Control 
      type="search"
      placeholder="Search Songs or Artists..." 
@@ -99,7 +99,7 @@ const Dashboard = ({ code }) => {
       ))}
       {searchResults.length === 0 && (
         <div className="text-center" style={{whiteSpace: 'pre'}}>
-          {lyrics ? lyrics : 
+          { !search ? lyrics : 
             <div className='mt-4'>
               <img src={playingTrack.albumCover} alt={playingTrack.title} style={{height: '400px', width: '400px'}}/>
             </div>
