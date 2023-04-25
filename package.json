@@ -2,6 +2,7 @@
   "name": "iheartmusic",
   "private": true,
   "version": "1.0.0",
+  "homepage": "http://localhost:3000",
   "devDependencies": {
     "lerna": "^6.6.1"
   },
@@ -9,7 +10,8 @@
     "start": "lerna run start",
     "test": "lerna run test",
     "new-version": "lerna verison --conventional-commits --yes",
-    "diff": "lerna diff"
+    "diff": "lerna diff",
+    "build": "lerna run build"
   },
   "workspaces": [
     "packages/*"
